@@ -14,10 +14,62 @@ const s3 = new S3Client({
   },
 });
 
-export async function GET() {
+export async function GET(req: Request) {
   await connectDB();
-  const cars = await Car.find();
-  return NextResponse.json(cars);
+  
+  // Pegar parâmetros da query string
+  const { searchParams } = new URL(req.url);
+  const yearFrom = searchParams.get("yearFrom");
+  const yearTo = searchParams.get("yearTo");
+  const priceFrom = searchParams.get("priceFrom");
+  const priceTo = searchParams.get("priceTo");
+  const brand = searchParams.get("brand");
+  const model = searchParams.get("model");
+  const order = searchParams.get("order"); // "asc" ou "desc"
+
+  // Criar um objeto de filtro para MongoDB
+  let filters: any = {};
+
+  // Filtro por ano (de/até)
+  if (yearFrom || yearTo) {
+    filters.year = {};
+    if (yearFrom) filters.year.$gte = parseInt(yearFrom);
+    if (yearTo) filters.year.$lte = parseInt(yearTo);
+  }
+
+  // Filtro por preço (de/até)
+  if (priceFrom || priceTo) {
+    filters.price = {};
+    if (priceFrom) filters.price.$gte = parseFloat(priceFrom);
+    if (priceTo) filters.price.$lte = parseFloat(priceTo);
+  }
+
+  // Filtro por marca
+  if (brand) {
+    filters.brand = new RegExp(brand, "i"); // Case insensitive (ex: "toyota" == "Toyota")
+  }
+
+  // Filtro por modelo (nome do carro)
+  if (model) {
+    filters.name = new RegExp(model, "i");
+  }
+
+  // Definir ordenação (1 = crescente, -1 = decrescente)
+  let sortOption: any = {};
+  if (order === "asc") {
+    sortOption.price = 1; // Menor preço primeiro
+  } else if (order === "desc") {
+    sortOption.price = -1; // Maior preço primeiro
+  }
+
+  try {
+    // Buscar no MongoDB aplicando filtros e ordenação
+    const cars = await Car.find(filters).sort(sortOption);
+    return NextResponse.json(cars);
+  } catch (error) {
+    console.error("Erro ao buscar carros:", error);
+    return NextResponse.json({ message: "Erro ao buscar carros" }, { status: 500 });
+  }
 }
 
 export async function POST(req: Request) {

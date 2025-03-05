@@ -47,10 +47,9 @@ export default function CarDetail() {
       <h1 className="text-3xl font-bold text-gray-800 mb-4">{car.name}</h1>
 
       {/* Carrossel de Imagens */}
-      <Carousel withIndicators loop className="w-full h-80 mb-6">
+      <Carousel withIndicators loop height={500} className="w-full mb-6">
         {car.img.map((image, index) => (
           <Carousel.Slide key={index}>
-            <div className="relative w-full h-80">
               <Image
                 src={image}
                 alt={car.name}
@@ -58,7 +57,6 @@ export default function CarDetail() {
                 objectFit="cover"
                 className="rounded-md"
               />
-            </div>
           </Carousel.Slide>
         ))}
       </Carousel>
