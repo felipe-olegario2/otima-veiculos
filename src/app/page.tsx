@@ -9,7 +9,7 @@ interface Car {
   _id: string;
   name: string;
   price: string;
-  img: string;
+  img: string[]; // Corrigido para um array de strings
   year: number;
   brand: string;
   description?: string;
@@ -37,27 +37,33 @@ export default function Home() {
   }, []);
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-6">Carros disponíveis</h1>
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-center">Carros disponíveis</h1>
       {loading ? (
-        <p>Carregando...</p>
+        <p className="text-center">Carregando...</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {cars.length > 0 ? (
             cars.map((car) => (
-              <Card key={car._id} shadow="sm" padding="lg">
+              <Card key={car._id} shadow="sm" padding="lg" radius="md" withBorder>
                 <Card.Section>
-                  <Image src={car.img} alt={car.name} width={300} height={200} />
+                  <Image
+                    src={car.img[0] || "/placeholder.jpg"} // Corrigido para acessar a primeira imagem
+                    alt={car.name}
+                    width={300}
+                    height={200}
+                    className="object-cover w-full h-48"
+                  />
                 </Card.Section>
-                <Text className="font-semibold text-lg">{car.name}</Text>
-                <Text className="text-gray-600">{car.price}</Text>
+                <Text className="font-semibold text-lg mt-2">{car.name}</Text>
+                <Text className="text-gray-600">Preço: {car.price}</Text>
                 <Button fullWidth mt="md" component={Link} href={`/detail/${car._id}`}>
                   Ver Detalhes
                 </Button>
               </Card>
             ))
           ) : (
-            <p>Nenhum carro disponível no momento.</p>
+            <p className="text-center">Nenhum carro disponível no momento.</p>
           )}
         </div>
       )}
