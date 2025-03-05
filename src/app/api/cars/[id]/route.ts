@@ -6,6 +6,7 @@ import Car from "@/lib/models/Car";
 export async function GET(req: Request, { params }: { params: { id: string } }) {
   await connectDB();
   try {
+    console.log('aqui', params.id);
     const car = await Car.findById(params.id);
     if (!car) {
       return NextResponse.json({ message: "Carro não encontrado" }, { status: 404 });

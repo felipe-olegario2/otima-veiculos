@@ -5,6 +5,7 @@ import { createTheme } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "./globals.css";
 import DynamicContainer from "@/components/DynamicContainer"; // ✅ Importando o novo componente Client
+import '@mantine/carousel/styles.css';
 
 const theme = createTheme({
   primaryColor: "blue",
