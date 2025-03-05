@@ -65,7 +65,7 @@ export default function CarDetail() {
 
       {/* Informações do Veículo */}
       <Card shadow="sm" padding="lg" radius="md" withBorder>
-        <Text size="lg" weight={700} className="text-gray-700">
+        <Text size="lg" className="text-gray-700 font-bold">
           {car.brand} - {car.year}
         </Text>
         <Text className="text-2xl font-semibold text-blue-600 mt-2">
