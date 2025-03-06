@@ -3,14 +3,13 @@ import { connectDB } from "@/lib/db";
 import Car from "@/lib/models/Car";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
-// Configuração do MinIO
 const s3 = new S3Client({
-  region: "us-east-1",
-  endpoint: "http://localhost:9000", // Se Next.js estiver no Docker, use "http://minio:9000"
-  forcePathStyle: true, // Importante para MinIO
+  region: process.env.S3_REGION || "us-east-1",
+  endpoint: process.env.S3_URI || "http://localhost:9000",
+  forcePathStyle: true,
   credentials: {
-    accessKeyId: "minioadmin",
-    secretAccessKey: "minioadmin123",
+    accessKeyId: process.env.S3_ACCESS_KEY ?? "", // Usa "" caso seja undefined
+    secretAccessKey: process.env.S3_SECRET_ACCESS_KEY ?? "", // Usa "" caso seja undefined
   },
 });
 
@@ -99,7 +98,7 @@ export async function POST(req: Request) {
           Key: fileName,
           Body: buffer,
           ContentType: file.type,
-          ContentLength: contentLength, // Define o tamanho correto do arquivo
+          ContentLength: contentLength,
         })
       );
 
@@ -108,14 +107,21 @@ export async function POST(req: Request) {
       imageUrls.push(imageUrl);
     }
 
-    // Criar novo carro no MongoDB com as imagens
+    // Criar novo carro no MongoDB com os novos campos
     const newCar = await Car.create({
-      name: formData.get("name"),
+      model: formData.get("model"),
       price: formData.get("price"),
-      img: imageUrls, // Agora recebe um array de imagens
-      year: formData.get("year"),
+      detail: formData.get("detail"),
+      img: imageUrls,
+      year: Number(formData.get("year")),
       brand: formData.get("brand"),
       description: formData.get("description"),
+      mileage: Number(formData.get("mileage")),
+      transmission: formData.get("transmission"),
+      fuel: formData.get("fuel"),
+      licensePlateEnd: Number(formData.get("licensePlateEnd")),
+      doors: Number(formData.get("doors")),
+      options: formData.getAll("options"), // Espera um array de strings
     });
 
     return NextResponse.json(newCar, { status: 201 });
