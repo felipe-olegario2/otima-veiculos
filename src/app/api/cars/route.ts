@@ -5,7 +5,7 @@ import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
 
 const s3 = new S3Client({
   region: process.env.S3_REGION || "us-east-1",
-  endpoint: process.env.S3_URI || "http://localhost:9003",
+  endpoint: process.env.S3_URI || "http://localhost:9000",
   forcePathStyle: true,
   credentials: {
     accessKeyId: process.env.S3_ACCESS_KEY ?? "", // Usa "" caso seja undefined
@@ -103,7 +103,7 @@ export async function POST(req: Request) {
       );
 
       // Criar URL da imagem e adicionar ao array
-      const imageUrl = `http://localhost:9003/otima-veiculos/${fileName}`;
+      const imageUrl = `http://localhost:9000/otima-veiculos/${fileName}`;
       imageUrls.push(imageUrl);
     }
 

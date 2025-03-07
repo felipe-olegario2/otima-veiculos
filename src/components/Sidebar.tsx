@@ -67,17 +67,6 @@ export default function Sidebar({ brands, filters, setFilters }: SidebarProps) {
         onChange={(value) => setFilters((prev) => ({ ...prev, brand: value || "" }))}
         className="mt-3"
       />
-
-      <Select
-        label="Ordenar por preço"
-        data={[
-          { value: "asc", label: "Menor preço" },
-          { value: "desc", label: "Maior preço" },
-        ]}
-        value={filters.order}
-        onChange={(value) => setFilters((prev) => ({ ...prev, order: value || "" }))}
-        className="mt-3"
-      />
     </aside>
   );
 }

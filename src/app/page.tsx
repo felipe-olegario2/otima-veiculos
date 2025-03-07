@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Skeleton, Card } from "@mantine/core";
+import { Skeleton, Card, Select } from "@mantine/core";
 import Sidebar from "../components/Sidebar";
 import CarCard from "../components/CardCar";
 import { Car } from "../types/Car";
@@ -62,7 +62,18 @@ export default function Home() {
 
       {/* Lista de Carros */}
       <div className="flex-1">
-        <h1 className="text-3xl font-bold mb-6 text-center">Carros disponíveis</h1>
+        <div className="flex justify-between items-center pb-4">
+          <span>{cars.length} Carros encontrados</span>
+          <Select
+            placeholder="Ordenar por preço"
+            data={[
+              { value: "asc", label: "Menor preço" },
+              { value: "desc", label: "Maior preço" },
+            ]}
+            value={filters.order}
+            onChange={(value) => setFilters((prev) => ({ ...prev, order: value || "" }))}
+          />
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {loading
             ? // Exibir Skeletons enquanto os dados carregam
