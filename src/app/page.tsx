@@ -1,15 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Skeleton, Card, Select } from "@mantine/core";
+import { Skeleton, Card, Select, Button } from "@mantine/core";
 import Sidebar from "../components/Sidebar";
 import CarCard from "../components/CardCar";
 import { Car } from "../types/Car";
+import { IoFilter } from "react-icons/io5";
+import { FiChevronLeft } from "react-icons/fi";
+
 
 export default function Home() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [brands, setBrands] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(true); // Estado para exibir/esconder Sidebar
   const [filters, setFilters] = useState<{
     yearFrom: string | number;
     yearTo: string | number;
@@ -57,13 +61,24 @@ export default function Home() {
   }, [filters]);
 
   return (
-    <div className="flex gap-4">
-      <Sidebar brands={brands} filters={filters} setFilters={setFilters} />
+    <div>
+      <div className="flex items-center pb-4 gap-56">
+        <Button
+          leftSection={showFilters ? <FiChevronLeft/> : <IoFilter />}
+          variant="outline"
+          radius="xl"
+          onClick={() => setShowFilters(!showFilters)} // Alterna a visibilidade do Sidebar
+        >
+          {showFilters ? "Esconder Filtros" : "Filtros"}
+        </Button>
+      </div>
+      <div className="flex gap-4">
+      {showFilters && <Sidebar brands={brands} filters={filters} setFilters={setFilters} />}
 
-      {/* Lista de Carros */}
-      <div className="flex-1">
-        <div className="flex justify-between items-center pb-4">
-          <span className="font-thin">{cars.length} Carros encontrados</span>
+        {/* Lista de Carros */}
+        <div className="flex-1">
+        <div className="flex items-center pb-4 justify-between">
+        <span className="font-thin">{cars.length} Carros encontrados</span>
           <div className="flex items-center gap-2">
             <span>Ordenar por: </span>
             <Select
@@ -78,9 +93,9 @@ export default function Home() {
             />
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {loading
-            ? // Exibir Skeletons enquanto os dados carregam
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {loading
+              ? // Exibir Skeletons enquanto os dados carregam
               Array.from({ length: 6 }).map((_, index) => (
                 <Card key={index} shadow="sm" padding="lg" radius="md" withBorder>
                   <Skeleton height={200} />
@@ -89,9 +104,10 @@ export default function Home() {
                   <Skeleton height={40} mt="md" />
                 </Card>
               ))
-            : cars.length > 0
-            ? cars.map((car) => <CarCard key={car._id} car={car} />)
-            : <p className="text-center col-span-3">Nenhum carro disponível no momento.</p>}
+              : cars.length > 0
+                ? cars.map((car) => <CarCard key={car._id} car={car} />)
+                : <p className="text-center col-span-3">Nenhum carro disponível no momento.</p>}
+          </div>
         </div>
       </div>
     </div>

@@ -29,15 +29,15 @@ export default function CarCard({ car }: CarCardProps) {
         <NumberFormatter prefix="R$ " value={car.price} thousandSeparator="." decimalSeparator="," />
       </Text>
       <div className="mt-1 flex gap-2">
-        <span className="bg-[#e9edf2] text-[#67696b] text-xs font-medium me-2 px-2.5 py-1 rounded-full flex items-center">{car.mileage} km</span>
-        <span className="bg-[#e9edf2] text-[#67696b] text-xs font-medium me-2 px-2.5 py-1 rounded-full flex items-center">{car.year}</span>
+        <span className="bg-[#e9edf2] text-[#67696b] text-xs font-medium px-2.5 py-1 rounded-full flex items-center">{car.mileage} km</span>
+        <span className="bg-[#e9edf2] text-[#67696b] text-xs font-medium px-2.5 py-1 rounded-full flex items-center">{car.year}</span>
       </div>
       <div className="flex gap-2 items-center mt-2">
         <Button variant="outline" fullWidth component={Link} href={`/detail/${car._id}`}>
           Ver Detalhes
         </Button>
         <Button color="#26d267">
-          <FaWhatsapp/>
+          <FaWhatsapp className="text-2xl"/>
         </Button>
       </div>
     </Card>
