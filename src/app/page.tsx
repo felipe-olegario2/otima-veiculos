@@ -63,16 +63,20 @@ export default function Home() {
       {/* Lista de Carros */}
       <div className="flex-1">
         <div className="flex justify-between items-center pb-4">
-          <span>{cars.length} Carros encontrados</span>
-          <Select
-            placeholder="Ordenar por preço"
-            data={[
-              { value: "asc", label: "Menor preço" },
-              { value: "desc", label: "Maior preço" },
-            ]}
-            value={filters.order}
-            onChange={(value) => setFilters((prev) => ({ ...prev, order: value || "" }))}
-          />
+          <span className="font-thin">{cars.length} Carros encontrados</span>
+          <div className="flex items-center gap-2">
+            <span>Ordenar por: </span>
+            <Select
+              placeholder="Mais relevantes"
+              data={[
+                { value: "asc", label: "Menor preço" },
+                { value: "desc", label: "Maior preço" },
+              ]}
+              comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }}
+              value={filters.order}
+              onChange={(value) => setFilters((prev) => ({ ...prev, order: value || "" }))}
+            />
+          </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {loading

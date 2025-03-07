@@ -62,8 +62,10 @@ export default function Sidebar({ brands, filters, setFilters }: SidebarProps) {
 
       <Select
         label="Marca"
+        placeholder="Honda"
         data={brands}
         value={filters.brand}
+        comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }}
         onChange={(value) => setFilters((prev) => ({ ...prev, brand: value || "" }))}
         className="mt-3"
       />
