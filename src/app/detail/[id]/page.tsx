@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Carousel } from "@mantine/carousel";
-import { Card, Text, Button, Skeleton } from "@mantine/core";
+import { Card, Text, Button, Skeleton, NumberFormatter } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
 import {Car} from "@/types/Car"
@@ -81,7 +81,7 @@ export default function CarDetail() {
               {car?.brand} {car?.detail} {car?.year}
             </Text>
             <Text className="text-2xl font-semibold text-blue-600 mt-2">
-            R$ {(car?.price ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            <NumberFormatter prefix="R$ " value={car?.price} thousandSeparator="." decimalSeparator="," />
             </Text>
             <Text className="mt-4 text-gray-600">{car?.description}</Text>
 

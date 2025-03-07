@@ -1,11 +1,17 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <nav className="bg-gray-900 p-4 text-white">
-      <div className="container mx-auto flex justify-between">
+    <nav className="p-4 bg-white border-b-2 border-gray-100">
+      <div className="container mx-auto flex justify-between items-center">
         <Link href="/" className="text-xl font-bold">
-          Otima Veículos
+          <Image
+            src="/logo-otima-veiculos.jpeg"
+            alt="logo"
+            width={100}
+            height={150}
+          />
         </Link>
         <div className="space-x-4">
           <Link href="/">Home</Link>
