@@ -6,16 +6,7 @@ import { Carousel } from "@mantine/carousel";
 import { Card, Text, Button, Skeleton } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
-
-interface Car {
-  _id: string;
-  name: string;
-  price: string;
-  img: string[];
-  year: number;
-  brand: string;
-  description?: string;
-}
+import {Car} from "@/types/Car"
 
 export default function CarDetail() {
   const { id } = useParams();
@@ -45,7 +36,7 @@ export default function CarDetail() {
       {loading ? (
         <Skeleton height={40} width="60%" className="mb-4" />
       ) : (
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">{car?.name}</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">{car?.model}</h1>
       )}
 
       {/* Carrossel de Imagens */}
@@ -58,7 +49,7 @@ export default function CarDetail() {
               <div className="relative w-full h-[400px]">
                 <Image
                   src={image}
-                  alt={car.name}
+                  alt={car.model}
                   width={800}
                   height={400}
                   className="rounded-md object-cover"
@@ -87,10 +78,10 @@ export default function CarDetail() {
         ) : (
           <>
             <Text size="lg" className="text-gray-700 font-bold">
-              {car?.brand} - {car?.year}
+              {car?.brand} {car?.detail} {car?.year}
             </Text>
             <Text className="text-2xl font-semibold text-blue-600 mt-2">
-              R$ {parseFloat(car?.price).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
+            R$ {(car?.price ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
             </Text>
             <Text className="mt-4 text-gray-600">{car?.description}</Text>
 

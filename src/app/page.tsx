@@ -4,16 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, Text, Button, Select, NumberInput, Skeleton } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
-
-interface Car {
-  _id: string;
-  name: string;
-  price: string;
-  img: string[];
-  year: number;
-  brand: string;
-  description?: string;
-}
+import {Car} from "../types/Car"
 
 export default function Home() {
   const [cars, setCars] = useState<Car[]>([]);
@@ -152,15 +143,15 @@ export default function Home() {
                 <Card.Section>
                   <Image
                     src={car.img[0] || "/placeholder.jpg"}
-                    alt={car.name}
+                    alt={car.model}
                     width={300}
                     height={200}
                     className="object-cover w-full h-48"
                   />
                 </Card.Section>
-                <Text className="font-semibold text-lg mt-2">{car.name}</Text>
+                <Text className="font-semibold text-lg mt-2">{car.model}</Text>
                 <Text className="text-gray-600">
-                  Preço: R$ {parseFloat(car.price).toLocaleString("pt-BR")}
+                  Preço: R$ {(car?.price ?? 0).toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                 </Text>
                 <Button fullWidth mt="md" component={Link} href={`/detail/${car._id}`}>
                   Ver Detalhes
