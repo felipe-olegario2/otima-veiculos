@@ -13,5 +13,6 @@ export interface Car {
     licensePlateEnd?: number;
     doors?: number;
     options?: string[];
+    createdAt?: string;
   }
   

@@ -6,7 +6,8 @@ import { Carousel } from "@mantine/carousel";
 import { Card, Text, Button, Skeleton, NumberFormatter } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
-import {Car} from "@/types/Car"
+import { Car } from "@/types/Car";
+import { FaWhatsapp } from "react-icons/fa";
 
 export default function CarDetail() {
   const { id } = useParams();
@@ -31,72 +32,139 @@ export default function CarDetail() {
   }, [id]);
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      {/* Título do Carro */}
-      {loading ? (
-        <Skeleton height={40} width="60%" className="mb-4" />
-      ) : (
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">{car?.model}</h1>
-      )}
-
-      {/* Carrossel de Imagens */}
-      {loading ? (
-        <Skeleton height={400} className="mb-6 w-full" />
-      ) : (
-        <Carousel withIndicators loop height={400} className="w-full mb-6">
-          {car?.img.map((image, index) => (
-            <Carousel.Slide key={index}>
-              <div className="relative w-full h-[400px]">
-                <Image
-                  src={image}
-                  alt={car.model}
-                  width={800}
-                  height={400}
-                  className="rounded-md object-cover"
-                  priority
-                />
-              </div>
-            </Carousel.Slide>
-          ))}
-        </Carousel>
-      )}
-
-      {/* Informações do Veículo */}
-      <Card shadow="sm" padding="lg" radius="md" withBorder>
+    <div className="container mx-auto max-w-6xl flex flex-col md:flex-row gap-6 mt-6">
+      {/* Seção do Carrossel e Card de Contato abaixo em telas pequenas */}
+      <div className="w-full flex flex-col gap-6">
+        {/* Carrossel */}
         {loading ? (
-          <>
-            <Skeleton height={25} width="50%" />
-            <Skeleton height={35} width="40%" className="mt-2" />
-            <Skeleton height={16} className="mt-4" />
-            <Skeleton height={16} width="80%" className="mt-2" />
-            <Skeleton height={16} width="60%" className="mt-2" />
-            <div className="mt-6 flex gap-4">
-              <Skeleton height={45} className="w-full" />
-              <Skeleton height={45} className="w-full" />
-            </div>
-          </>
+          <Skeleton height={400} className="mb-6 w-full" />
         ) : (
-          <>
-            <Text size="lg" className="text-gray-700 font-bold">
-              {car?.brand} {car?.detail} {car?.year}
-            </Text>
-            <Text className="text-2xl font-semibold text-blue-600 mt-2">
-            <NumberFormatter prefix="R$ " value={car?.price} thousandSeparator="." decimalSeparator="," />
-            </Text>
-            <Text className="mt-4 text-gray-600">{car?.description}</Text>
+          <Carousel withIndicators loop className="w-full mb-6">
+            {car?.img.map((image, index) => (
+              <Carousel.Slide key={index}>
+                <div className="relative w-full">
+                  <Image
+                    src={image}
+                    alt={car.model}
+                    width={900}
+                    height={500}
+                    className="rounded-md object-cover w-full h-96"
+                    priority
+                  />
+                </div>
+              </Carousel.Slide>
+            ))}
+          </Carousel>
+        )}
 
-            {/* Botões de Ação */}
-            <div className="mt-6 flex gap-4">
-              <Button fullWidth color="blue" component={Link} href="/contact">
-                Entrar em Contato
-              </Button>
-              <Button fullWidth variant="outline" color="gray">
+        {/* Card de preço e contato (Móvel para baixo em telas menores) */}
+        <Card
+          shadow="md"
+          padding="lg"
+          radius="md"
+          withBorder
+          className="bg-blue-900 text-white w-full md:hidden block"
+        >
+          {loading ? (
+            <>
+              <Skeleton height={30} width="80%" className="mb-4" />
+              <Skeleton height={45} className="mb-3" />
+              <Skeleton height={45} className="mb-3" />
+            </>
+          ) : (
+            <>
+              <Text className="text-2xl font-bold">
+                <NumberFormatter
+                  prefix="R$ "
+                  value={car?.price}
+                  thousandSeparator="."
+                  decimalSeparator=","
+                />
+              </Text>
+              <Text className="text-sm underline mt-1">Ver parcelas →</Text>
+
+              {/* Botões de Ação */}
+              <Button fullWidth mt="md" color="blue" className="bg-white text-blue-900 font-semibold">
                 Simular Financiamento
               </Button>
-            </div>
-          </>
-        )}
-      </Card>
+
+              <Button
+                fullWidth
+                mt="md"
+                color="green"
+                leftSection={<FaWhatsapp />}
+                className="bg-green-500 text-white font-semibold"
+              >
+                Enviar WhatsApp
+              </Button>
+
+              <Text className="text-sm mt-4 opacity-80">
+                Anunciado em {new Date().toLocaleDateString("pt-BR")} às {new Date().toLocaleTimeString("pt-BR")}
+              </Text>
+            </>
+          )}
+        </Card>
+
+        {/* Informações do Veículo */}
+        <Card shadow="sm" padding="lg" radius="md" withBorder>
+          {loading ? (
+            <>
+              <Skeleton height={25} width="50%" />
+              <Skeleton height={35} width="40%" className="mt-2" />
+              <Skeleton height={16} className="mt-4" />
+              <Skeleton height={16} width="80%" className="mt-2" />
+              <Skeleton height={16} width="60%" className="mt-2" />
+            </>
+          ) : (
+            <>
+              <Text className="text-2xl text-gray-700 font-bold">
+                {car?.brand} {car?.model} {car?.detail} {car?.year}
+              </Text>
+              <Text className="mt-4 text-gray-600">{car?.description}</Text>
+            </>
+          )}
+        </Card>
+      </div>
+
+      {/* Card lateral (Somente para telas médias e grandes) */}
+      <div className="w-full md:w-1/3 hidden md:block">
+        <Card shadow="md" padding="lg" radius="md" withBorder className="bg-blue-900 text-white">
+          {loading ? (
+            <>
+              <Skeleton height={30} width="80%" className="mb-4" />
+              <Skeleton height={45} className="mb-3" />
+              <Skeleton height={45} className="mb-3" />
+            </>
+          ) : (
+            <>
+              <Text className="text-2xl font-bold">
+                <NumberFormatter
+                  prefix="R$ "
+                  value={car?.price}
+                  thousandSeparator="."
+                  decimalSeparator=","
+                />
+              </Text>
+              <Button fullWidth mt="md" color="blue" className="bg-white text-blue-900 font-semibold">
+                Simular Financiamento
+              </Button>
+
+              <Button
+                fullWidth
+                mt="md"
+                color="green"
+                leftSection={<FaWhatsapp />}
+                className="bg-green-500 text-white font-semibold"
+              >
+                Enviar WhatsApp
+              </Button>
+            </>
+          )}
+        </Card>
+        <Text className="text-sm mt-4 opacity-80">
+          Anunciado em {car?.createdAt ? new Date(car.createdAt).toLocaleDateString("pt-BR") : "Data desconhecida"}
+        </Text>
+      </div>
     </div>
   );
 }

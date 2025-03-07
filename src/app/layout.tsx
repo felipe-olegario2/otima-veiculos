@@ -4,7 +4,6 @@ import { MantineProvider } from "@mantine/core";
 import { createTheme } from "@mantine/core";
 import "@mantine/core/styles.css";
 import "./globals.css";
-import DynamicContainer from "@/components/DynamicContainer"; // ✅ Importando o novo componente Client
 import '@mantine/carousel/styles.css';
 import { Figtree, Inter } from "next/font/google";
 
@@ -21,7 +20,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className={`bg-[#fbfbff] min-h-screen flex flex-col ${figtree.className}`}>
         <MantineProvider theme={theme}>
           <Navbar />
-          <DynamicContainer>{children}</DynamicContainer>
+          <div className="container mx-auto p-6 flex-1">{children}</div>
           <Footer />
         </MantineProvider>
       </body>
