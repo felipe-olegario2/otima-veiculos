@@ -3,18 +3,20 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { Carousel } from "@mantine/carousel";
-import { Card, Text, Button, Skeleton, NumberFormatter, ScrollArea, Divider } from "@mantine/core";
+import { Card, Text, Button, Skeleton, NumberFormatter, Divider, Modal } from "@mantine/core";
 import Image from "next/image";
 import Link from "next/link";
 import { Car } from "@/types/Car";
 import { FaWhatsapp } from "react-icons/fa";
 import DetailTable from "../../../components/detailTable";
 import Badge from "../../../components/Badge";
+import FinancingSimulator from "../../../components/FinancingSimulator";
 
 export default function CarDetail() {
   const { id } = useParams();
   const [car, setCar] = useState<Car | null>(null);
   const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false); // Estado do modal
 
   useEffect(() => {
     async function fetchCar() {
@@ -35,6 +37,17 @@ export default function CarDetail() {
 
   return (
     <div className="container mx-auto max-w-6xl flex flex-col md:flex-row gap-6 mt-6">
+      {/* Modal de Simulação de Financiamento */}
+      <Modal
+        opened={modalOpen}
+        onClose={() => setModalOpen(false)}
+        size="lg"
+        withCloseButton={false}
+        centered
+      >
+        {car && <FinancingSimulator carPrice={car.price} />}
+      </Modal>
+
       {/* Seção do Carrossel e Card de Contato abaixo em telas pequenas */}
       <div className="w-full flex flex-col gap-6">
         {/* Carrossel */}
@@ -60,13 +73,7 @@ export default function CarDetail() {
         )}
 
         {/* Card de preço e contato (Móvel para baixo em telas menores) */}
-        <Card
-          shadow="md"
-          padding="lg"
-          radius="md"
-          withBorder
-          className="bg-blue-900 text-white w-full md:hidden block"
-        >
+        <Card shadow="md" padding="lg" radius="md" withBorder className="bg-blue-900 text-white w-full md:hidden block">
           {loading ? (
             <>
               <Skeleton height={30} width="80%" className="mb-4" />
@@ -76,27 +83,16 @@ export default function CarDetail() {
           ) : (
             <>
               <Text className="text-2xl font-bold">
-                <NumberFormatter
-                  prefix="R$ "
-                  value={car?.price}
-                  thousandSeparator="."
-                  decimalSeparator=","
-                />
+                <NumberFormatter prefix="R$ " value={car?.price} thousandSeparator="." decimalSeparator="," />
               </Text>
               <Text className="text-sm underline mt-1">Ver parcelas →</Text>
 
-              {/* Botões de Ação */}
-              <Button fullWidth mt="md" color="blue" className="bg-white text-blue-900 font-semibold">
+              {/* Botão para abrir o modal */}
+              <Button fullWidth mt="md" color="blue" className="bg-white text-blue-900 font-semibold" onClick={() => setModalOpen(true)}>
                 Simular Financiamento
               </Button>
 
-              <Button
-                fullWidth
-                mt="md"
-                color="green"
-                leftSection={<FaWhatsapp />}
-                className="bg-green-500 text-white font-semibold"
-              >
+              <Button fullWidth mt="md" color="green" leftSection={<FaWhatsapp />} className="bg-green-500 text-white font-semibold">
                 Enviar WhatsApp
               </Button>
 
@@ -126,21 +122,17 @@ export default function CarDetail() {
 
               {car?.options?.length ? (
                 <>
-                  <Text className="text-xl text-gray-700 font-bold my-4">
-                    Itens de série e opcionais
-                  </Text>
-                    <div className="flex flex-wrap gap-2">
-                      {car.options.map((option, index) => (
-                        <Badge key={index}>{option}</Badge>
-                      ))}
-                    </div>
+                  <Text className="text-xl text-gray-700 font-bold my-4">Itens de série e opcionais</Text>
+                  <div className="flex flex-wrap gap-2">
+                    {car.options.map((option, index) => (
+                      <Badge key={index}>{option}</Badge>
+                    ))}
+                  </div>
                 </>
               ) : null}
 
               <Divider my="md" />
-              <Text className="text-xl text-gray-700 font-bold my-4">
-                Descrição
-              </Text>
+              <Text className="text-xl text-gray-700 font-bold my-4">Descrição</Text>
               <Text className="text-gray-600">{car?.description}</Text>
             </>
           )}
@@ -159,24 +151,15 @@ export default function CarDetail() {
           ) : (
             <>
               <Text className="text-2xl font-bold">
-                <NumberFormatter
-                  prefix="R$ "
-                  value={car?.price}
-                  thousandSeparator="."
-                  decimalSeparator=","
-                />
+                <NumberFormatter prefix="R$ " value={car?.price} thousandSeparator="." decimalSeparator="," />
               </Text>
-              <Button fullWidth mt="md" color="blue" className="bg-white text-blue-900 font-semibold">
+
+              {/* Botão para abrir o modal */}
+              <Button fullWidth mt="md" color="blue" className="bg-white text-blue-900 font-semibold" onClick={() => setModalOpen(true)}>
                 Simular Financiamento
               </Button>
 
-              <Button
-                fullWidth
-                mt="md"
-                color="green"
-                leftSection={<FaWhatsapp />}
-                className="bg-green-500 text-white font-semibold"
-              >
+              <Button fullWidth mt="md" color="green" leftSection={<FaWhatsapp />} className="bg-green-500 text-white font-semibold">
                 Enviar WhatsApp
               </Button>
             </>

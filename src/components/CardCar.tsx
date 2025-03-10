@@ -37,7 +37,7 @@ export default function CarCard({ car }: CarCardProps) {
         <Button variant="outline" fullWidth component={Link} href={`/detail/${car._id}`}>
           Ver Detalhes
         </Button>
-        <Button color="#26d267">
+        <Button color="#26d267" component={Link} href="https://api.whatsapp.com/send?phone=5511943637539">
           <FaWhatsapp className="text-2xl"/>
         </Button>
       </div>
