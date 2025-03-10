@@ -14,7 +14,7 @@ interface CarCardProps {
 
 export default function DetailTable({ car }: CarCardProps) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-2">
       <Paper shadow="sm" radius="md" p="md" withBorder>
         <Text className="flex gap-2 items-center text-gray-600 text-sm">
           <LiaTachometerAltSolid size={20} />
