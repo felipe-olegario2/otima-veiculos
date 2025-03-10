@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Car } from "@/types/Car";
 import { FaWhatsapp } from "react-icons/fa";
+import DetailTable from "../../../components/detailTable";
 
 export default function CarDetail() {
   const { id } = useParams();
@@ -34,7 +35,7 @@ export default function CarDetail() {
   return (
     <div className="container mx-auto max-w-6xl flex flex-col md:flex-row gap-6 mt-6">
       {/* Seção do Carrossel e Card de Contato abaixo em telas pequenas */}
-      <div className="w-full flex flex-col gap-6">
+      <div className="w-10/12 flex flex-col gap-6">
         {/* Carrossel */}
         {loading ? (
           <Skeleton height={400} className="mb-6 w-full" />
@@ -117,9 +118,10 @@ export default function CarDetail() {
             </>
           ) : (
             <>
-              <Text className="text-2xl text-gray-700 font-bold">
+              <Text className="text-3xl text-gray-700 font-bold mb-4">
                 {car?.brand} {car?.model} {car?.detail} {car?.year}
               </Text>
+              {car && <DetailTable key={car._id} car={car} />}
               <Text className="mt-4 text-gray-600">{car?.description}</Text>
             </>
           )}

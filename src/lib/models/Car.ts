@@ -8,6 +8,7 @@ const CarSchema = new mongoose.Schema(
     img: { type: [String], required: true },
     year: { type: Number, required: true },
     brand: { type: String, required: true },
+    color: { type: String, required: true },
     description: { type: String },
     mileage: { type: Number, required: true }, // Quilometragem
     transmission: { type: String, enum: ["Automático", "Manual"], required: true }, // Câmbio
