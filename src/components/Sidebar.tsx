@@ -21,53 +21,74 @@ interface SidebarProps {
 export default function Sidebar({ brands, filters, setFilters }: SidebarProps) {
   return (
     <aside className="w-64 p-4 bg-white shadow-md rounded-md h-fit">
-      <Text className="text-lg font-semibold mb-4">Filtros</Text>
+      <Text className="text-lg font-semibold">Ano</Text>
+      <div className="flex items-center gap-2 mb-4">
+        <NumberInput
+          hideControls
+          label="De"
+          placeholder="1900"
+          min={1900}
+          max={new Date().getFullYear()}
+          value={filters.yearFrom}
+          onChange={(value) => {
+            const sanitizedValue = value?.toString().replace(/\D/g, "").slice(0, 4) || ""; // Remove não numéricos e limita a 4 caracteres
+            setFilters((prev) => ({ ...prev, yearFrom: Number(sanitizedValue) || "" }));
+          }}
+          onInput={(e) => {
+            e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "").slice(0, 4); // Força apenas números no input
+          }}
+        />
 
-      <NumberInput
-        hideControls
-        label="Ano de (mínimo)"
-        min={1900}
-        max={new Date().getFullYear()}
-        value={filters.yearFrom}
-        onChange={(value) => setFilters((prev) => ({ ...prev, yearFrom: value }))}
-      />
+        <NumberInput
+          hideControls
+          label="Até"
+          placeholder="2025"
+          min={1900}
+          max={new Date().getFullYear() + 1}
+          value={filters.yearTo}
+          onChange={(value) => {
+            const sanitizedValue = value?.toString().replace(/\D/g, "").slice(0, 4) || "";
+            setFilters((prev) => ({ ...prev, yearTo: Number(sanitizedValue) || "" }));
+          }}
+          onInput={(e) => {
+            e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "").slice(0, 4);
+          }}
+        />
 
-      <NumberInput
-        hideControls
-        label="Ano até (máximo)"
-        min={1900}
-        max={new Date().getFullYear()}
-        value={filters.yearTo}
-        onChange={(value) => setFilters((prev) => ({ ...prev, yearTo: value }))}
-        className="mt-3"
-      />
+      </div>
+      <Text className="text-lg font-semibold">Preço</Text>
+      <div className="flex items-center gap-2 mb-4">
+        <NumberInput
+          hideControls
+          label="De"
+          placeholder="R$"
+          min={0}
+          value={filters.priceFrom}
+          decimalSeparator=","
+          thousandSeparator="."
+          onChange={(value) => setFilters((prev) => ({ ...prev, priceFrom: value }))}
+        />
 
-      <NumberInput
-        hideControls
-        label="Preço mínimo"
-        min={0}
-        value={filters.priceFrom}
-        onChange={(value) => setFilters((prev) => ({ ...prev, priceFrom: value }))}
-        className="mt-3"
-      />
+        <NumberInput
+          hideControls
+          placeholder="R$"
+          label="Até"
+          min={0}
+          decimalSeparator=","
+          thousandSeparator="."
+          value={filters.priceTo}
+          onChange={(value) => setFilters((prev) => ({ ...prev, priceTo: value }))}
+        />
+      </div>
 
-      <NumberInput
-        hideControls
-        label="Preço máximo"
-        min={0}
-        value={filters.priceTo}
-        onChange={(value) => setFilters((prev) => ({ ...prev, priceTo: value }))}
-        className="mt-3"
-      />
+      <Text className="text-lg font-semibold">Preço</Text>
 
       <Select
-        label="Marca"
         placeholder="Honda"
         data={brands}
         value={filters.brand}
         comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }}
         onChange={(value) => setFilters((prev) => ({ ...prev, brand: value || "" }))}
-        className="mt-3"
       />
     </aside>
   );

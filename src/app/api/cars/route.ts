@@ -110,7 +110,7 @@ export async function POST(req: Request) {
     // Criar novo carro no MongoDB com os novos campos
     const newCar = await Car.create({
       model: formData.get("model"),
-      price: formData.get("price"),
+      price: Number(formData.get("price")),
       detail: formData.get("detail"),
       img: imageUrls,
       year: Number(formData.get("year")),
@@ -121,6 +121,7 @@ export async function POST(req: Request) {
       fuel: formData.get("fuel"),
       licensePlateEnd: Number(formData.get("licensePlateEnd")),
       doors: Number(formData.get("doors")),
+      color: Number(formData.get("color")),
       options: formData.getAll("options"), // Espera um array de strings
     });
 
