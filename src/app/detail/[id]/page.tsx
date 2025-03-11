@@ -85,7 +85,7 @@ export default function CarDetail() {
               <Text className="text-2xl font-bold">
                 <NumberFormatter prefix="R$ " value={car?.price} thousandSeparator="." decimalSeparator="," />
               </Text>
-              <Text className="text-sm underline mt-1">Ver parcelas →</Text>
+              <Text className="text-sm underline mt-1 cursor-pointer" onClick={() => setModalOpen(true)}>Ver parcelas →</Text>
 
               {/* Botão para abrir o modal */}
               <Button fullWidth mt="md" color="blue" className="bg-white text-blue-900 font-semibold" onClick={() => setModalOpen(true)}>
