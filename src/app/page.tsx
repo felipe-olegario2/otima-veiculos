@@ -1,27 +1,21 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Skeleton, Card, Select, Button } from "@mantine/core";
+import { Skeleton, Card, Select, Button, Modal, Text, Paper } from "@mantine/core";
 import Sidebar from "../components/Sidebar";
 import CarCard from "../components/CardCar";
 import { Car } from "../types/Car";
 import { IoFilter } from "react-icons/io5";
 import { FiChevronLeft } from "react-icons/fi";
-
+import { useMediaQuery } from "@mantine/hooks";
 
 export default function Home() {
+  const isMobile = useMediaQuery('(max-width: 768px)');
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [brands, setBrands] = useState<string[]>([]);
-  const [showFilters, setShowFilters] = useState(false); // Estado para exibir/esconder Sidebar
-  const [filters, setFilters] = useState<{
-    yearFrom: string | number;
-    yearTo: string | number;
-    priceFrom: string | number;
-    priceTo: string | number;
-    brand: string;
-    order: string;
-  }>({
+  const [showFilters, setShowFilters] = useState(false);
+  const [filters, setFilters] = useState({
     yearFrom: "",
     yearTo: "",
     priceFrom: "",
@@ -31,85 +25,132 @@ export default function Home() {
   });
 
   useEffect(() => {
-    async function fetchCars() {
+    async function fetchData() {
       try {
-        const queryParams = new URLSearchParams(filters as any).toString();
-        const res = await fetch(`/api/cars?${queryParams}`);
-        if (!res.ok) throw new Error("Erro ao buscar carros");
-        const data = await res.json();
-        setCars(data);
+        setLoading(true);
+
+        // Fetch brands
+        const brandsRes = await fetch("/api/cars/brands");
+        const brandsData = await brandsRes.json();
+        setBrands(brandsData);
+
+        // Fetch cars with filters
+        const queryParams = new URLSearchParams();
+        Object.entries(filters).forEach(([key, value]) => {
+          if (value) queryParams.append(key, String(value));
+        });
+
+        const carsRes = await fetch(`/api/cars?${queryParams.toString()}`);
+        const carsData = await carsRes.json();
+        setCars(carsData);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
     }
 
-    async function fetchBrands() {
-      try {
-        const res = await fetch("/api/cars/brands");
-        if (!res.ok) throw new Error("Erro ao buscar marcas");
-        const data = await res.json();
-        setBrands(data);
-      } catch (error) {
-        console.error(error);
-      }
-    }
+    const debounceTimer = setTimeout(() => {
+      fetchData();
+    }, 300);
 
-    fetchBrands();
-    fetchCars();
+    return () => clearTimeout(debounceTimer);
   }, [filters]);
 
   return (
-    <div>
-      <div className="flex items-center pb-4 gap-56">
+    <div className="container mx-auto px-4 py-6">
+      <Text size="xl" fw={500} className="text-center">Catálogo de Veículos</Text>
+      <div className="flex justify-between w-full items-center my-6">
         <Button
-          leftSection={showFilters ? <FiChevronLeft/> : <IoFilter />}
+          leftSection={showFilters ? <FiChevronLeft size={18} /> : <IoFilter size={18} />}
           variant="outline"
           radius="xl"
-          onClick={() => setShowFilters(!showFilters)} // Alterna a visibilidade do Sidebar
+          onClick={() => setShowFilters(!showFilters)}
+          className=""
         >
-          {showFilters ? "Esconder Filtros" : "Filtros"}
+          {showFilters ? "Ocultar Filtros" : "Filtrar"}
         </Button>
-      </div>
-      <div className="flex gap-4">
-      {showFilters && <Sidebar brands={brands} filters={filters} setFilters={setFilters} />}
 
-        {/* Lista de Carros */}
-        <div className="flex-1">
-        <div className="flex items-center pb-4 justify-between">
-        <span className="font-thin">{cars.length} Carros encontrados</span>
-          <div className="flex items-center gap-2">
-            <span>Ordenar por: </span>
-            <Select
-              placeholder="Mais relevantes"
-              data={[
-                { value: "asc", label: "Menor preço" },
-                { value: "desc", label: "Maior preço" },
-              ]}
-              comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }}
-              value={filters.order}
-              onChange={(value) => setFilters((prev) => ({ ...prev, order: value || "" }))}
-            />
+        <Select
+          placeholder="Ordenar por"
+          label="Ordenar por:"
+          data={[
+            { value: "", label: "Relevância" },
+            { value: "asc", label: "Menor preço" },
+            { value: "desc", label: "Maior preço" },
+            { value: "newest", label: "Mais novos" },
+            { value: "oldest", label: "Mais antigos" },
+          ]}
+          value={filters.order}
+          onChange={(value) => setFilters((prev) => ({ ...prev, order: value || "" }))}
+          className="w-40"
+        />
+      </div>
+
+      <div className="flex flex-col sm:flex-row gap-6">
+        {/* Sidebar - Desktop */}
+        {!isMobile && showFilters && (
+          <div className="w-64 flex-shrink-0">
+            <Paper shadow="xs" p="xl">
+              <Sidebar brands={brands} filters={filters} setFilters={setFilters} />
+            </Paper >
           </div>
-        </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-            {loading
-              ? // Exibir Skeletons enquanto os dados carregam
-              Array.from({ length: 6 }).map((_, index) => (
+        )}
+
+        {/* Main Content */}
+        <div className="flex-1">
+          <Text c="dimmed" mb="md">{cars.length} veículos encontrados</Text>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {loading ? (
+              Array.from({ length: 8 }).map((_, index) => (
                 <Card key={index} shadow="sm" padding="lg" radius="md" withBorder>
-                  <Skeleton height={200} />
-                  <Skeleton height={20} width="220px" mt="md" />
-                  <Skeleton height={16} width="220px" mt="sm" />
-                  <Skeleton height={40} mt="md" />
+                  <Skeleton height={160} mb="sm" />
+                  <Skeleton height={20} width="80%" mb="xs" />
+                  <Skeleton height={16} width="60%" mb="sm" />
+                  <Skeleton height={36} />
                 </Card>
               ))
-              : cars.length > 0
-                ? cars.map((car) => <CarCard key={car._id} car={car} />)
-                : <p className="text-center col-span-3">Nenhum carro disponível no momento.</p>}
+            ) : cars.length > 0 ? (
+              cars.map((car) => <CarCard key={car._id} car={car} />)
+            ) : (
+              <div className="col-span-full text-center py-12">
+                <Text size="lg" c="dimmed">Nenhum veículo encontrado com esses filtros</Text>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Mobile Modal */}
+      <Modal
+        opened={isMobile && showFilters}
+        onClose={() => setShowFilters(false)}
+        title="Filtros"
+        size="85%"
+        overlayProps={{
+          backgroundOpacity: 0.55,
+          blur: 3,
+        }}
+        transitionProps={{
+          transition: "slide-right",
+          duration: 200,
+        }}
+        closeButtonProps={{
+          'aria-label': 'Fechar filtros',
+        }}
+      >
+        <Sidebar brands={brands} filters={filters} setFilters={setFilters} />
+        <div className="mt-4 flex justify-center">
+          <Button
+            fullWidth
+            onClick={() => setShowFilters(false)}
+            variant="light"
+          >
+            Aplicar Filtros
+          </Button>
+        </div>
+      </Modal>
     </div>
   );
 }

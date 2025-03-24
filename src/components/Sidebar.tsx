@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { Text, Select, NumberInput } from "@mantine/core";
 
 interface Filters {
@@ -20,8 +19,8 @@ interface SidebarProps {
 
 export default function Sidebar({ brands, filters, setFilters }: SidebarProps) {
   return (
-    <aside className="absolute sm:static z-50 w-64 p-4 bg-white shadow-md rounded-md h-fit">
-      <Text className="text-lg font-semibold">Ano</Text>
+    <aside className="w-full bg-white rounded-md h-fit">
+      <Text className="text-lg font-semibold mb-2">Ano</Text>
       <div className="flex items-center gap-2 mb-4">
         <NumberInput
           hideControls
@@ -31,14 +30,10 @@ export default function Sidebar({ brands, filters, setFilters }: SidebarProps) {
           max={new Date().getFullYear()}
           value={filters.yearFrom}
           onChange={(value) => {
-            const sanitizedValue = value?.toString().replace(/\D/g, "").slice(0, 4) || ""; // Remove não numéricos e limita a 4 caracteres
+            const sanitizedValue = value?.toString().replace(/\D/g, "").slice(0, 4) || "";
             setFilters((prev) => ({ ...prev, yearFrom: Number(sanitizedValue) || "" }));
           }}
-          onInput={(e) => {
-            e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "").slice(0, 4); // Força apenas números no input
-          }}
         />
-
         <NumberInput
           hideControls
           label="Até"
@@ -50,13 +45,10 @@ export default function Sidebar({ brands, filters, setFilters }: SidebarProps) {
             const sanitizedValue = value?.toString().replace(/\D/g, "").slice(0, 4) || "";
             setFilters((prev) => ({ ...prev, yearTo: Number(sanitizedValue) || "" }));
           }}
-          onInput={(e) => {
-            e.currentTarget.value = e.currentTarget.value.replace(/\D/g, "").slice(0, 4);
-          }}
         />
-
       </div>
-      <Text className="text-lg font-semibold">Preço</Text>
+
+      <Text className="text-lg font-semibold mb-2">Preço</Text>
       <div className="flex items-center gap-2 mb-4">
         <NumberInput
           hideControls
@@ -68,27 +60,26 @@ export default function Sidebar({ brands, filters, setFilters }: SidebarProps) {
           thousandSeparator="."
           onChange={(value) => setFilters((prev) => ({ ...prev, priceFrom: value }))}
         />
-
         <NumberInput
           hideControls
-          placeholder="R$"
           label="Até"
+          placeholder="R$"
           min={0}
+          value={filters.priceTo}
           decimalSeparator=","
           thousandSeparator="."
-          value={filters.priceTo}
           onChange={(value) => setFilters((prev) => ({ ...prev, priceTo: value }))}
         />
       </div>
 
-      <Text className="text-lg font-semibold">Preço</Text>
-
+      <Text className="text-lg font-semibold mb-2">Marca</Text>
       <Select
-        placeholder="Honda"
+        placeholder="Selecione uma marca"
         data={brands}
         value={filters.brand}
         comboboxProps={{ transitionProps: { transition: 'pop', duration: 200 } }}
         onChange={(value) => setFilters((prev) => ({ ...prev, brand: value || "" }))}
+        className="mb-4"
       />
     </aside>
   );
