@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { TextInput, Button, NumberInput, Text, NumberFormatter } from "@mantine/core";
 import { FaWhatsapp } from "react-icons/fa";
+import Cookies from "js-cookie";
 
 interface FinancingSimulatorProps {
   carPrice: number;
@@ -51,6 +52,15 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
   // Validação de e-mail
   const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
+  useEffect(() => {
+    const savedData = Cookies.get("financingUserData");
+    if (savedData) {
+      const parsed = JSON.parse(savedData);
+      setUserData(parsed);
+      setStep(1); // Começa no passo 1 preenchido
+    }
+  }, []);
+
   // Validação do formulário (roda quando os inputs mudam)
   useEffect(() => {
     const newErrors = {
@@ -60,9 +70,10 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
       cpf: userData.cpf.replace(/\D/g, "").length !== 11,
     };
 
-    // setErrors(newErrors);
-    setIsValid(!Object.values(newErrors).includes(true)); // Se não há erro, o formulário é válido
+    setErrors(newErrors);
+    setIsValid(!Object.values(newErrors).includes(true));
   }, [userData]);
+
 
   return (
     <div className="w-full mx-auto">
@@ -115,11 +126,15 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
             fullWidth
             disabled={!isValid}
             variant="light"
-            onClick={() => setStep(2)}
+            onClick={() => {
+              Cookies.set("financingUserData", JSON.stringify(userData), { expires: 7 });
+              setStep(2);
+            }}
             className="mt-4"
           >
             Continuar
           </Button>
+
         </>
       ) : (
         <>
@@ -176,7 +191,7 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
             </span>
           </Text>
 
-          <Button fullWidth className="mt-6 bg-green-600 text-white" leftSection={<FaWhatsapp />}>
+          <Button fullWidth mt="md" color="green" leftSection={<FaWhatsapp />} className="bg-green-500 text-white font-semibold">
             Enviar WhatsApp
           </Button>
 
