@@ -5,17 +5,15 @@ import { FaWhatsapp } from "react-icons/fa";
 import Link from "next/link";
 
 interface WhatsappButtonProps {
-  phone: string;
   label?: string;
   message?: string;
 }
 
 export default function WhatsappButton({
-  phone,
   label = "Enviar WhatsApp",
   message,
 }: WhatsappButtonProps) {
-  const whatsappLink = `https://api.whatsapp.com/send?phone=${phone}${
+  const whatsappLink = `https://api.whatsapp.com/send?phone=5511943637539${
     message ? `&text=${encodeURIComponent(message)}` : ""
   }`;
 

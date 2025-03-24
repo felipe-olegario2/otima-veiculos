@@ -160,7 +160,7 @@ export default function CarDetail() {
                 Simular Financiamento
               </Button>
 
-              <WhatsappButton phone="5511943637539" />
+              <WhatsappButton message="Olá! Gostaria de saber mais sobre o carro."/>
             </>
           )}
         </Card>

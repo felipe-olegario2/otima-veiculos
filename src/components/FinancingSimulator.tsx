@@ -192,7 +192,7 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
             </span>
           </Text>
 
-          <WhatsappButton phone="5511943637539" />
+          <WhatsappButton message="Olá! Gostaria de saber mais sobre o financiamento."/>
 
           <Button variant="outline" fullWidth className="mt-2">
             Receber contato do time comercial
