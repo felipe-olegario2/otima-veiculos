@@ -5,34 +5,39 @@ import { TextInput, Button, NumberInput, Text, NumberFormatter } from "@mantine/
 import { FaWhatsapp } from "react-icons/fa";
 import Cookies from "js-cookie";
 import WhatsappButton from "./WhatsappButton";
+import { notifications } from "@mantine/notifications";
+import { IoCheckmarkSharp } from "react-icons/io5";
+import { BiSolidErrorAlt } from "react-icons/bi";
 
 interface FinancingSimulatorProps {
   carPrice: number;
+  carId: string;
 }
 
-export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps) {
+export default function FinancingSimulator({ carPrice, carId }: FinancingSimulatorProps) {
   const [step, setStep] = useState(1);
   const [userData, setUserData] = useState({
     name: "",
     phone: "",
     email: "",
-    cpf: "",
+    document: "",
   });
 
   const [errors, setErrors] = useState({
     name: false,
     phone: false,
     email: false,
-    cpf: false,
+    document: false,
   });
 
-  const [isValid, setIsValid] = useState(false); // Estado para validar o formulário
-  const [entryValue, setEntryValue] = useState(carPrice * 0.2);
-  const [installments, setInstallments] = useState(36);
-  const interestRate = 0.015; // 1.5% ao mês
+  const [isValid, setIsValid] = useState(false);
+  const [entryValue, setEntryValue] = useState<number>(carPrice * 0.2);
+  const [installments, setInstallments] = useState<number>(36);
+  const interestRate = 0.015;
 
-  // Máscara para telefone (99) 99999-9999
+  // Funções de formatação com tratamento para valores vazios
   const formatPhone = (value: string) => {
+    if (!value) return "";
     return value
       .replace(/\D/g, "")
       .replace(/(\d{2})(\d)/, "($1) $2")
@@ -40,8 +45,8 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
       .slice(0, 15);
   };
 
-  // Máscara para CPF 999.999.999-99
-  const formatCPF = (value: string) => {
+  const formatDocument = (value: string) => {
+    if (!value) return "";
     return value
       .replace(/\D/g, "")
       .replace(/(\d{3})(\d)/, "$1.$2")
@@ -50,31 +55,84 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
       .slice(0, 14);
   };
 
-  // Validação de e-mail
   const isValidEmail = (email: string) => /\S+@\S+\.\S+/.test(email);
 
   useEffect(() => {
     const savedData = Cookies.get("financingUserData");
     if (savedData) {
-      const parsed = JSON.parse(savedData);
-      setUserData(parsed);
-      setStep(1); // Começa no passo 1 preenchido
+      try {
+        const parsed = JSON.parse(savedData);
+        setUserData({
+          name: parsed.name || "",
+          phone: parsed.phone || "",
+          email: parsed.email || "",
+          document: parsed.document || "",
+        });
+        setStep(1);
+      } catch (e) {
+        console.error("Error parsing saved data:", e);
+      }
     }
   }, []);
 
-  // Validação do formulário (roda quando os inputs mudam)
   useEffect(() => {
     const newErrors = {
       name: userData.name.trim() === "",
       phone: userData.phone.replace(/\D/g, "").length !== 11,
       email: !isValidEmail(userData.email),
-      cpf: userData.cpf.replace(/\D/g, "").length !== 11,
+      document: userData.document.replace(/\D/g, "").length !== 11,
     };
 
     setErrors(newErrors);
     setIsValid(!Object.values(newErrors).includes(true));
   }, [userData]);
 
+  // Função segura para atualizar entryValue
+  const handleEntryValueChange = (value: string | number) => {
+    const numValue = typeof value === 'string' ? parseFloat(value) || carPrice * 0.2 : value;
+    setEntryValue(Math.max(carPrice * 0.2, Math.min(carPrice, numValue)));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const res = await fetch("/api/financing-request", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          carId,
+          ...userData,
+          entryValue,
+          installments,
+        }),
+      });
+
+      const json = await res.json();
+
+      if (json.success) {
+        notifications.show({
+          title: "Sucesso!",
+          message: "Solicitação enviada com sucesso!",
+          color: "teal",
+          icon: <IoCheckmarkSharp size="1.1rem" />,
+        });
+      } else {
+        notifications.show({
+          title: "Erro",
+          message: json.error || "Erro ao enviar solicitação",
+          color: "red",
+          icon: <BiSolidErrorAlt size="1.1rem" />,
+        });
+      }
+    } catch (error) {
+      console.error("Erro ao enviar:", error);
+      notifications.show({
+        title: "Erro",
+        message: "Ocorreu um erro ao enviar a solicitação",
+        color: "red",
+        icon: <BiSolidErrorAlt size="1.1rem" />,
+      });
+    }
+  };
 
   return (
     <div className="w-full mx-auto">
@@ -116,9 +174,9 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
           <TextInput
             label="CPF"
             placeholder="000.000.000-00"
-            value={userData.cpf}
-            onChange={(e) => setUserData({ ...userData, cpf: formatCPF(e.target.value) })}
-            error={errors.cpf ? "CPF inválido" : ""}
+            value={userData.document}
+            onChange={(e) => setUserData({ ...userData, document: formatDocument(e.target.value) })}
+            error={errors.document ? "CPF inválido" : ""}
             required
             className="mt-3"
           />
@@ -135,7 +193,6 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
           >
             Continuar
           </Button>
-
         </>
       ) : (
         <>
@@ -159,9 +216,9 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
             min={carPrice * 0.2}
             max={carPrice}
             value={entryValue}
+            onChange={handleEntryValueChange}
             thousandSeparator="."
             decimalSeparator=","
-            onChange={(value) => setEntryValue(value || carPrice * 0.2)}
             className="mt-3"
           />
 
@@ -192,9 +249,14 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
             </span>
           </Text>
 
-          <WhatsappButton message="Olá! Gostaria de saber mais sobre o financiamento."/>
+          <WhatsappButton message="Olá! Gostaria de saber mais sobre o financiamento." />
 
-          <Button variant="outline" fullWidth className="mt-2">
+          <Button
+            variant="outline"
+            fullWidth
+            className="mt-2"
+            onClick={handleSubmit}
+          >
             Receber contato do time comercial
           </Button>
         </>

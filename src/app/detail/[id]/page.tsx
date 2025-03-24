@@ -46,7 +46,7 @@ export default function CarDetail() {
         withCloseButton={false}
         centered
       >
-        {car && <FinancingSimulator carPrice={car.price} />}
+        {car && <FinancingSimulator carPrice={car.price} carId={car._id}/>}
       </Modal>
 
       {/* Seção do Carrossel e Card de Contato abaixo em telas pequenas */}
