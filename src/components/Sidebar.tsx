@@ -20,7 +20,7 @@ interface SidebarProps {
 
 export default function Sidebar({ brands, filters, setFilters }: SidebarProps) {
   return (
-    <aside className="w-64 p-4 bg-white shadow-md rounded-md h-fit">
+    <aside className="absolute sm:static z-50 w-64 p-4 bg-white shadow-md rounded-md h-fit">
       <Text className="text-lg font-semibold">Ano</Text>
       <div className="flex items-center gap-2 mb-4">
         <NumberInput
