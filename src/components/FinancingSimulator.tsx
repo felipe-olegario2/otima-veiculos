@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { TextInput, Button, NumberInput, Text, NumberFormatter } from "@mantine/core";
 import { FaWhatsapp } from "react-icons/fa";
 import Cookies from "js-cookie";
+import WhatsappButton from "./WhatsappButton";
 
 interface FinancingSimulatorProps {
   carPrice: number;
@@ -191,9 +192,7 @@ export default function FinancingSimulator({ carPrice }: FinancingSimulatorProps
             </span>
           </Text>
 
-          <Button fullWidth mt="md" color="green" leftSection={<FaWhatsapp />} className="bg-green-500 text-white font-semibold">
-            Enviar WhatsApp
-          </Button>
+          <WhatsappButton phone="5511943637539" />
 
           <Button variant="outline" fullWidth className="mt-2">
             Receber contato do time comercial

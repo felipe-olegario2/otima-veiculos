@@ -11,6 +11,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import DetailTable from "../../../components/detailTable";
 import Badge from "../../../components/Badge";
 import FinancingSimulator from "../../../components/FinancingSimulator";
+import WhatsappButton from "../../../components/WhatsappButton";
 
 export default function CarDetail() {
   const { id } = useParams();
@@ -159,9 +160,7 @@ export default function CarDetail() {
                 Simular Financiamento
               </Button>
 
-              <Button fullWidth mt="md" color="green" leftSection={<FaWhatsapp />} className="bg-green-500 text-white font-semibold">
-                Enviar WhatsApp
-              </Button>
+              <WhatsappButton phone="5511943637539" />
             </>
           )}
         </Card>
