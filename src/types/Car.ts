@@ -1,6 +1,7 @@
 export interface Car {
     _id: string;
     model: string;
+    mainImg: string;
     price: number;
     detail: string;
     color: string;

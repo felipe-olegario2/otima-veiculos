@@ -73,43 +73,34 @@ export async function GET(req: Request) {
 
 export async function POST(req: Request) {
   await connectDB();
+
   try {
     const formData = await req.formData();
     const files = formData.getAll("images") as File[];
+    const mainImgFile = formData.get("mainImg") as File;
+
+    if (!mainImgFile) {
+      return NextResponse.json({ message: "Imagem principal obrigatória" }, { status: 400 });
+    }
 
     if (!files || files.length === 0) {
       return NextResponse.json({ message: "Imagens obrigatórias" }, { status: 400 });
     }
 
+    // Upload imagem principal
+    const mainImgUrl = await uploadFileToMinio(mainImgFile, "main-");
+
+    // Upload das demais imagens
     const imageUrls: string[] = [];
-
     for (const file of files) {
-      const fileName = `${Date.now()}-${file.name}`;
-
-      // Convertendo para Buffer e pegando o tamanho
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      const contentLength = buffer.length;
-
-      // Upload para MinIO
-      await s3.send(
-        new PutObjectCommand({
-          Bucket: "otima-veiculos",
-          Key: fileName,
-          Body: buffer,
-          ContentType: file.type,
-          ContentLength: contentLength,
-        })
-      );
-
-      // Criar URL da imagem e adicionar ao array
-      const imageUrl = `http://localhost:9000/otima-veiculos/${fileName}`;
-      imageUrls.push(imageUrl);
+      const url = await uploadFileToMinio(file);
+      imageUrls.push(url);
     }
 
-    // Criar novo carro no MongoDB com os novos campos
+    // Criar o carro no banco
     const newCar = await Car.create({
       model: formData.get("model"),
+      mainImg: mainImgUrl,
       price: Number(formData.get("price")),
       detail: formData.get("detail"),
       img: imageUrls,
@@ -121,8 +112,8 @@ export async function POST(req: Request) {
       fuel: formData.get("fuel"),
       licensePlateEnd: Number(formData.get("licensePlateEnd")),
       doors: Number(formData.get("doors")),
-      color: Number(formData.get("color")),
-      options: formData.getAll("options"), // Espera um array de strings
+      color: formData.get("color"),
+      options: formData.getAll("options"),
     });
 
     return NextResponse.json(newCar, { status: 201 });
@@ -130,4 +121,21 @@ export async function POST(req: Request) {
     console.error("Erro ao criar carro:", error);
     return NextResponse.json({ message: "Erro ao criar carro" }, { status: 500 });
   }
+}
+
+async function uploadFileToMinio(file: File, prefix = ""): Promise<string> {
+  const buffer = Buffer.from(await file.arrayBuffer());
+  const fileName = `${Date.now()}-${prefix}${file.name}`;
+
+  await s3.send(
+    new PutObjectCommand({
+      Bucket: "otima-veiculos",
+      Key: fileName,
+      Body: buffer,
+      ContentType: file.type,
+      ContentLength: buffer.length,
+    })
+  );
+
+  return `http://localhost:9000/otima-veiculos/${fileName}`;
 }

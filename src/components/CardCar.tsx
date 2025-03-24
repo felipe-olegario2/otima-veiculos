@@ -17,7 +17,7 @@ export default function CarCard({ car }: CarCardProps) {
     <Card shadow="sm" padding="lg" radius="md" withBorder>
       <Card.Section>
         <Image
-          src={car.img[0] || "/placeholder.jpg"}
+          src={car.mainImg || "/placeholder.jpg"}
           alt={car.model}
           width={300}
           height={200}

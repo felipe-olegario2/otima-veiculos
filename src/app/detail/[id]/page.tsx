@@ -63,8 +63,8 @@ export default function CarDetail() {
                     src={image}
                     alt={car.model}
                     width={900}
-                    height={500}
-                    className="rounded-md object-cover w-full h-96"
+                    height={700}
+                    className="rounded-md object-cover w-full"
                     priority
                   />
                 </div>
