@@ -13,7 +13,7 @@ export default function Home() {
   const [cars, setCars] = useState<Car[]>([]);
   const [loading, setLoading] = useState(true);
   const [brands, setBrands] = useState<string[]>([]);
-  const [showFilters, setShowFilters] = useState(true); // Estado para exibir/esconder Sidebar
+  const [showFilters, setShowFilters] = useState(false); // Estado para exibir/esconder Sidebar
   const [filters, setFilters] = useState<{
     yearFrom: string | number;
     yearTo: string | number;
