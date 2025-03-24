@@ -8,6 +8,7 @@ import { Car } from "../types/Car";
 import { IoFilter } from "react-icons/io5";
 import { FiChevronLeft } from "react-icons/fi";
 import { useMediaQuery } from "@mantine/hooks";
+import Image from "next/image";
 
 export default function Home() {
   const isMobile = useMediaQuery('(max-width: 768px)');
@@ -58,8 +59,12 @@ export default function Home() {
   }, [filters]);
 
   return (
-    <div className="container mx-auto px-4 py-6">
-      <Text size="xl" fw={500} className="text-center">Catálogo de Veículos</Text>
+    <div className="container mx-auto pb-6">
+      <img
+        src="/otima-banner.png"
+        alt="image"
+        className="rounded-md object-cover"
+      />
       <div className="flex justify-between w-full items-center my-6">
         <Button
           leftSection={showFilters ? <FiChevronLeft size={18} /> : <IoFilter size={18} />}

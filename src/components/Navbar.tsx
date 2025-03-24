@@ -4,7 +4,7 @@ import Link from "next/link";
 export default function Navbar() {
   return (
     <nav className="p-4 bg-white border-b-2 border-gray-100">
-      <div className="container mx-auto flex justify-between items-center">
+      <div className="container px-6 mx-auto flex justify-between items-center">
         <Link href="/" className="text-xl font-bold">
           <Image
             src="/logo-otima-veiculos.jpeg"
