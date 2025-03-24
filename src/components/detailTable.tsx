@@ -20,7 +20,7 @@ export default function DetailTable({ car }: CarCardProps) {
           <LiaTachometerAltSolid size={20} />
           Quilometragem
         </Text>
-        <Text className="text-2xl font-bold">
+        <Text className="text-xl sm:text-2xl font-bold">
           {car.mileage}
         </Text>
       </Paper>
@@ -29,7 +29,7 @@ export default function DetailTable({ car }: CarCardProps) {
           <CiCalendarDate size={20} />
           Ano
         </Text>
-        <Text className="text-2xl font-bold">
+        <Text className="text-xl sm:text-2xl font-bold">
           {car.year}
         </Text>
       </Paper>
@@ -38,7 +38,7 @@ export default function DetailTable({ car }: CarCardProps) {
           <BsHSquare />
           Cambio
         </Text>
-        <Text className="text-2xl font-bold">
+        <Text className="text-xl sm:text-2xl font-bold">
           {car.transmission}
         </Text>
       </Paper>
@@ -47,7 +47,7 @@ export default function DetailTable({ car }: CarCardProps) {
           <BsFuelPump />
           Combustível
         </Text>
-        <Text className="text-2xl font-bold">
+        <Text className="text-xl sm:text-2xl font-bold">
           {car.fuel}
         </Text>
       </Paper>
@@ -56,7 +56,7 @@ export default function DetailTable({ car }: CarCardProps) {
           <IoColorPaletteOutline size={20} />
           Cor
         </Text>
-        <Text className="text-2xl font-bold">
+        <Text className="text-xl sm:text-2xl font-bold">
           {car.color}
         </Text>
       </Paper>
@@ -65,7 +65,7 @@ export default function DetailTable({ car }: CarCardProps) {
           <CiBarcode size={20}/>
           Final da placa
         </Text>
-        <Text className="text-2xl font-bold">
+        <Text className="text-xl sm:text-2xl font-bold">
           {car.licensePlateEnd}
         </Text>
       </Paper>
