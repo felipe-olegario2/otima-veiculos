@@ -5,7 +5,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-white mt-12 p-6 text-center text-gray-700 border-t border-gray-200">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div className="container mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
         {/* Nome e direitos */}
         <div className="text-sm">
           © {year} <span className="font-semibold">Ótima Veículos</span> — Todos os direitos reservados.
