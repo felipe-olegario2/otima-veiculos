@@ -12,9 +12,10 @@ import { BiSolidErrorAlt } from "react-icons/bi";
 interface FinancingSimulatorProps {
   carPrice: number;
   carId: string;
+  onClose?: () => void; // Adicione esta linha
 }
 
-export default function FinancingSimulator({ carPrice, carId }: FinancingSimulatorProps) {
+export default function FinancingSimulator({ carPrice, carId, onClose }: FinancingSimulatorProps) {
   const [step, setStep] = useState(1);
   const [userData, setUserData] = useState({
     name: "",
@@ -115,6 +116,7 @@ export default function FinancingSimulator({ carPrice, carId }: FinancingSimulat
           color: "teal",
           icon: <IoCheckmarkSharp size="1.1rem" />,
         });
+        if (onClose) onClose();
       } else {
         notifications.show({
           title: "Erro",
